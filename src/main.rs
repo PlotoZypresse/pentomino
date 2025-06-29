@@ -13,9 +13,16 @@ enum PieceType {
     Z,
 }
 
+enum GameError {
+    InvalidPieceId,
+    AlreadyPlaced,
+    OutOfBounds,
+    Overlap,
+}
+
 struct Board {
     width: usize,
-    hight: usize,
+    height: usize,
     grid: Vec<Vec<Option<u32>>>,
 }
 
@@ -34,13 +41,101 @@ enum GameStatus {
 
 struct GameState {
     board: Board,
-    pices: Vec<Piece>,
+    pieces: Vec<Piece>,
     status: GameStatus,
     required_pieces: usize,
 }
 
 impl GameState {
-    fn new() -> Self {}
+    fn new() -> Self {
+        let game_grid: Vec<Vec<Option<u32>>> = vec![vec![None; 10]; 6];
+        let board = Board {
+            width: 10,
+            height: 6,
+            grid: game_grid,
+        };
+        let pieces = vec![
+            Piece {
+                piece_type: PieceType::F,
+                rotation: 0,
+                id: 0,
+                position: None,
+            },
+            Piece {
+                piece_type: PieceType::I,
+                rotation: 0,
+                id: 1,
+                position: None,
+            },
+            Piece {
+                piece_type: PieceType::L,
+                rotation: 0,
+                id: 2,
+                position: None,
+            },
+            Piece {
+                piece_type: PieceType::N,
+                rotation: 0,
+                id: 3,
+                position: None,
+            },
+            Piece {
+                piece_type: PieceType::P,
+                rotation: 0,
+                id: 4,
+                position: None,
+            },
+            Piece {
+                piece_type: PieceType::T,
+                rotation: 0,
+                id: 5,
+                position: None,
+            },
+            Piece {
+                piece_type: PieceType::U,
+                rotation: 0,
+                id: 6,
+                position: None,
+            },
+            Piece {
+                piece_type: PieceType::V,
+                rotation: 0,
+                id: 7,
+                position: None,
+            },
+            Piece {
+                piece_type: PieceType::W,
+                rotation: 0,
+                id: 8,
+                position: None,
+            },
+            Piece {
+                piece_type: PieceType::X,
+                rotation: 0,
+                id: 9,
+                position: None,
+            },
+            Piece {
+                piece_type: PieceType::Y,
+                rotation: 0,
+                id: 10,
+                position: None,
+            },
+            Piece {
+                piece_type: PieceType::Z,
+                rotation: 0,
+                id: 11,
+                position: None,
+            },
+        ];
+        let gamestate = GameState {
+            board,
+            pieces,
+            status: GameStatus::Inprogress,
+            required_pieces: 12,
+        };
+        return gamestate;
+    }
     fn rotate_piece(cords: Vec<(i32, i32)>, rotation: u8) -> Vec<(i32, i32)> {
         let trans = if rotation == 1 {
             let mut trans = Vec::new();
@@ -91,7 +186,31 @@ impl GameState {
         Self::rotate_piece(cords, rotation)
     }
 
-    fn place_piece(&mut self, piece_id: u32, x: usize, y: usize) -> Result<(), GameError> {}
+    fn place_piece(&mut self, piece_id: u32, x: usize, y: usize) -> Result<(), GameError> {
+        let mut piece_to_place: Option<usize> = None;
+        for i in 0..self.pieces.len() {
+            if self.pieces[i].id == piece_id {
+                piece_to_place = Some(i);
+                break;
+            }
+        }
+
+        if piece_to_place.is_none() {
+            return Err(GameError::InvalidPieceId);
+        }
+
+        let piece_id = piece_to_place.unwrap();
+
+        if self.pieces[piece_id].position.is_some() {
+            return Err(GameError::AlreadyPlaced);
+        }
+
+        // get pice rotation and right coordinates for spaces the piece will occupie
+        let piece_place = Self::piece_shape(
+            self.pieces[piece_id].piece_type,
+            self.pieces[piece_id].rotation,
+        );
+    }
     fn remove_piece(&mut self, piece_id: u32) -> Result<(), GameError> {}
     fn check_win(&self) -> bool {}
     fn available_pieces(&self) -> Vec<u32> {}

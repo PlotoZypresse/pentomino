@@ -1,3 +1,4 @@
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 enum PieceType {
     F,
     I,
@@ -199,17 +200,47 @@ impl GameState {
             return Err(GameError::InvalidPieceId);
         }
 
-        let piece_id = piece_to_place.unwrap();
+        let p_id = piece_to_place.unwrap();
 
-        if self.pieces[piece_id].position.is_some() {
+        if self.pieces[p_id].position.is_some() {
             return Err(GameError::AlreadyPlaced);
         }
 
         // get pice rotation and right coordinates for spaces the piece will occupie
-        let piece_place = Self::piece_shape(
-            self.pieces[piece_id].piece_type,
-            self.pieces[piece_id].rotation,
-        );
+        let piece_place =
+            Self::piece_shape(self.pieces[p_id].piece_type, self.pieces[p_id].rotation);
+
+        // translate shape default coordinates to board coordinates
+        let mut board_coords: Vec<(usize, usize)> = Vec::with_capacity(piece_place.len());
+        for i in 0..piece_place.len() {
+            let new_x = x as i32 + piece_place[i].0;
+            let new_y = y as i32 + piece_place[i].1;
+
+            if new_x < 0 || new_y < 0 {
+                return Err(GameError::OutOfBounds);
+            }
+
+            board_coords.push((new_x as usize, new_y as usize));
+        }
+
+        // Check if piece overlaps with other pieces and/or is outside of the grid
+        for i in 0..board_coords.len() {
+            let (cx, cy) = board_coords[i];
+            if cx >= self.board.width || cy >= self.board.height {
+                return Err(GameError::OutOfBounds);
+            }
+            if self.board.grid[cy][cx].is_some() {
+                return Err(GameError::Overlap);
+            }
+        }
+
+        // Place piece and save its position
+        for i in 0..board_coords.len() {
+            let (cx, cy) = board_coords[i];
+            self.board.grid[cy][cx] = Some(piece_id);
+        }
+        self.pieces[p_id].position = Some((x, y));
+        Ok(())
     }
     fn remove_piece(&mut self, piece_id: u32) -> Result<(), GameError> {}
     fn check_win(&self) -> bool {}

@@ -270,8 +270,30 @@ impl GameState {
         
         Ok(())
     }
-    fn check_win(&self) -> bool {}
+    
+    fn check_win(&mut self) {
+        // go through all pieces to check if position is not none
+        // if it is none the piece is not placed.
+        // every time a piece is placed we check if the placing is valid
+        // so if all pieces are placed we have a solution
+
+        let mut count: usize = 0;
+        for i in 0..self.pieces.len(){
+            if self.pieces[i].position.is_some(){
+                count += 1;
+            }
+        }
+
+        if count == self.pieces.len(){
+            self.status = GameStatus::Won
+        }
+        else{
+            self.status = GameStatus::Inprogress
+        }
+    }
+
     fn available_pieces(&self) -> Vec<u32> {}
+
     fn placed_pieces(&self) -> Vec<&Piece> {}
 }
 

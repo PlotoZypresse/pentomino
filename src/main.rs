@@ -19,6 +19,7 @@ enum GameError {
     AlreadyPlaced,
     OutOfBounds,
     Overlap,
+    NotPlaced
 }
 
 struct Board {
@@ -137,6 +138,7 @@ impl GameState {
         };
         return gamestate;
     }
+
     fn rotate_piece(cords: Vec<(i32, i32)>, rotation: u8) -> Vec<(i32, i32)> {
         let trans = if rotation == 1 {
             let mut trans = Vec::new();
@@ -242,7 +244,32 @@ impl GameState {
         self.pieces[p_id].position = Some((x, y));
         Ok(())
     }
-    fn remove_piece(&mut self, piece_id: u32) -> Result<(), GameError> {}
+
+    fn remove_piece(&mut self, piece_id: u32) -> Result<(), GameError> {
+        // go through the board clear all fields that are marked with the associated piece id
+        for y in 0..self.board.grid.len(){
+            for x in 0..self.board.grid[y].len(){
+                if self.board.grid[x][y] == Some(piece_id){
+                    self.board.grid[x][y] = None;
+                }
+            }
+        }
+
+        // go through the pieces find the piece with the right id and remove the pieces coordinates
+        let mut found = false;
+        for i in 0..self.pieces.len(){
+            if self.pieces[i].id == piece_id{
+                self.pieces[i].position = None;
+                found = true;
+            }
+        }
+
+        if found == false{
+            return Err(GameError::NotPlaced);
+        }
+        
+        Ok(())
+    }
     fn check_win(&self) -> bool {}
     fn available_pieces(&self) -> Vec<u32> {}
     fn placed_pieces(&self) -> Vec<&Piece> {}

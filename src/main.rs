@@ -249,8 +249,8 @@ impl GameState {
         // go through the board clear all fields that are marked with the associated piece id
         for y in 0..self.board.grid.len(){
             for x in 0..self.board.grid[y].len(){
-                if self.board.grid[x][y] == Some(piece_id){
-                    self.board.grid[x][y] = None;
+                if self.board.grid[y][x] == Some(piece_id){
+                    self.board.grid[y][x] = None;
                 }
             }
         }
@@ -292,9 +292,29 @@ impl GameState {
         }
     }
 
-    fn available_pieces(&self) -> Vec<u32> {}
+    fn available_pieces(&self) -> Vec<u32> {
+        let mut avail_pieces = Vec::with_capacity(self.pieces.len());
 
-    fn placed_pieces(&self) -> Vec<&Piece> {}
+        for i in 0..self.pieces.len(){
+            if self.pieces[i].position.is_none(){
+                avail_pieces.push(self.pieces[i].id);
+            }
+        }
+
+        return avail_pieces;
+    }
+
+    fn placed_pieces(&self) -> Vec<u32> {
+        let mut placed_pieces = Vec::with_capacity(self.pieces.len());
+
+        for i in 0..self.pieces.len(){
+            if self.pieces[i].position.is_some(){
+                placed_pieces.push(self.pieces[i].id);
+            }
+        }
+
+        return placed_pieces;
+    }
 }
 
 fn main() {

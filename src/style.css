@@ -1,0 +1,186 @@
+html{
+    background: grey;
+}
+h1{
+    color:black;
+    border: 1px solid gray;
+    background: wheat;
+    width: 500px;
+}
+
+#gameBoard {
+    color:  aqua;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    width: 500px;
+    height: 300px;
+}
+
+#gameBoard div {
+    background: wheat;
+    border: 1px solid gray;
+}
+
+#pieceTray {
+    background: wheat;
+    border: 1px solid gray;
+    width: 600px;
+    height: 400px;
+}
+
+#piece-L {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    width: 100px;
+    height: 200px;
+}
+
+#piece-L div {
+    background: rgb(255, 125, 125);
+    border: 0.5px solid black;
+}
+
+#piece-F {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 150px;
+    height: 150px;
+}
+
+#piece-F div {
+    background: yellow;
+    border: 0.5px solid black;
+}
+
+#piece-I {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    width: 50px;
+    height: 250px;
+}
+
+#piece-I div {
+    background: rgb(115, 20, 249);
+    border: 0.5px solid black;
+}
+
+#piece-N {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    width: 100px;
+    height: 200px;
+}
+
+#piece-N div {
+    background: blue;
+    border: 0.5px solid black;
+}
+
+#piece-P {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 100px;
+    height: 150px;
+}
+
+#piece-P div {
+    background: rgb(97, 251, 97);
+    border: 0.5px solid black;
+}
+
+#piece-T {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 150px;
+    height: 150px;
+}
+
+#piece-T div {
+    background: cyan;
+    border: 0.5px solid black;
+}
+
+#piece-U {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    width: 150px;
+    height: 100px;
+}
+
+#piece-U div {
+    background: pink;
+    border: 0.5px solid black;
+}
+
+#piece-V {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 150px;
+    height: 150px;
+}
+
+#piece-V div {
+    background: turquoise;
+    border: 0.5px solid black;
+}
+
+#piece-W {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 150px;
+    height: 150px;
+}
+
+#piece-W div {
+    background: green;
+    border: 0.5px solid black;
+}
+
+#piece-X {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 150px;
+    height: 150px;
+}
+
+#piece-X div {
+    background: red;
+    border: 0.5px solid black;
+}
+
+#piece-Y {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    width: 100px;
+    height: 200px;
+}
+
+#piece-Y div {
+    background: purple;
+    border: 0.5px solid black;
+}
+
+#piece-Z {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 150px;
+    height: 150px;
+}
+
+#piece-Z div {
+    background: rgb(255, 206, 44);
+    border: 0.5px solid black;
+}

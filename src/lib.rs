@@ -1,5 +1,8 @@
+use wasm_bindgen::prelude::*;
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-enum PieceType {
+#[wasm_bindgen]
+pub enum PieceType {
     F,
     I,
     L,
@@ -14,7 +17,29 @@ enum PieceType {
     Z,
 }
 
-enum GameError {
+#[wasm_bindgen]
+pub struct Point{
+    x: i32,
+    y: i32
+}
+
+#[wasm_bindgen]
+impl Point {
+    pub fn new(x: i32, y: i32) -> Point{
+       Point{x,y}
+    }
+
+    pub fn get_x(&self) -> i32{
+        self.x
+    }
+
+    pub fn get_y(&self) -> i32{
+        self.y
+    }
+}
+
+#[wasm_bindgen]
+pub enum GameError {
     InvalidPieceId,
     AlreadyPlaced,
     OutOfBounds,
@@ -22,25 +47,29 @@ enum GameError {
     NotPlaced
 }
 
-struct Board {
+#[wasm_bindgen]
+pub struct Board {
     width: usize,
     height: usize,
     grid: Vec<Vec<Option<u32>>>,
 }
 
-struct Piece {
+#[wasm_bindgen]
+pub struct Piece {
     piece_type: PieceType,
     rotation: u8, // 0 = 0°, 1 = 90°, 2 = 180°, 3 = 270°
     id: u32,
     position: Option<(usize, usize)>,
 }
 
-enum GameStatus {
+#[wasm_bindgen]
+pub enum GameStatus {
     Won,
     Lost,
     Inprogress,
 }
 
+#[wasm_bindgen]
 struct GameState {
     board: Board,
     pieces: Vec<Piece>,
@@ -48,8 +77,9 @@ struct GameState {
     required_pieces: usize,
 }
 
+#[wasm_bindgen]
 impl GameState {
-    fn new() -> Self {
+    pub fn new() -> Self {
         let game_grid: Vec<Vec<Option<u32>>> = vec![vec![None; 10]; 6];
         let board = Board {
             width: 10,
@@ -139,57 +169,57 @@ impl GameState {
         return gamestate;
     }
 
-    fn rotate_piece(cords: Vec<(i32, i32)>, rotation: u8) -> Vec<(i32, i32)> {
+    pub fn rotate_piece(cords: Vec<Point>, rotation: u8) -> Vec<Point> {
         let trans = if rotation == 1 {
             let mut trans = Vec::new();
-            for (x, y) in cords {
-                trans.push((y, -x));
+            for point in cords {
+                trans.push((point.get_y(), -point.get_x()));
             }
             trans
         } else if rotation == 2 {
             let mut trans = Vec::new();
-            for (x, y) in cords {
-                trans.push((-x, -y));
+            for point in cords {
+                trans.push((-point.get_x(), -point.get_y()));
             }
             trans
         } else if rotation == 3 {
             let mut trans = Vec::new();
-            for (x, y) in cords {
-                trans.push((-y, x));
+            for point in cords {
+                trans.push((-point.get_y(), point.get_x()));
             }
             trans
         } else {
-            cords
+           cords.into_iter().map(|point| (point.get_x(), point.get_y())).collect()
         };
 
         let minimum_x = trans.iter().map(|(x, _)| *x).min().unwrap_or(0);
         let minimum_y = trans.iter().map(|(_, y)| *y).min().unwrap_or(0);
         trans
             .iter()
-            .map(|(x, y)| (x - minimum_x, y - minimum_y))
+            .map(|(x, y)| Point::new(x - minimum_x, y - minimum_y))
             .collect()
     }
 
-    fn piece_shape(piece_type: PieceType, rotation: u8) -> Vec<(i32, i32)> {
+    pub fn piece_shape(piece_type: PieceType, rotation: u8) -> Vec<Point> {
         let cords = match piece_type {
-            PieceType::I => vec![(0, 0), (0, 1), (0, 2), (0, 3), (0, 4)],
-            PieceType::F => vec![(1, 0), (2, 0), (0, 1), (1, 1), (1, 2)],
-            PieceType::L => vec![(0, 0), (0, 1), (0, 2), (0, 3), (1, 3)],
-            PieceType::N => vec![(1, 0), (2, 0), (0, 1), (0, 2), (0, 3)],
-            PieceType::P => vec![(0, 0), (0, 1), (0, 2), (1, 0), (1, 1)],
-            PieceType::U => vec![(0, 0), (0, 1), (1, 1), (2, 1), (2, 0)],
-            PieceType::T => vec![(0, 0), (1, 0), (2, 0), (1, 1), (1, 2)],
-            PieceType::V => vec![(0, 0), (0, 1), (0, 2), (1, 2), (2, 2)],
-            PieceType::W => vec![(0, 0), (0, 1), (1, 1), (1, 2), (2, 2)],
-            PieceType::X => vec![(1, 0), (0, 1), (1, 1), (2, 1), (1, 2)],
-            PieceType::Y => vec![(1, 0), (0, 1), (1, 1), (1, 2), (1, 3)],
-            PieceType::Z => vec![(0, 0), (1, 0), (1, 1), (1, 2), (2, 2)],
+            PieceType::I => vec![Point::new(0, 0), Point::new(0, 1), Point::new(0, 2), Point::new(0, 3), Point::new(0, 4)],
+            PieceType::F => vec![Point::new(1, 0), Point::new(2, 0), Point::new(0, 1), Point::new(1, 1), Point::new(1, 2)],
+            PieceType::L => vec![Point::new(0, 0), Point::new(0, 1), Point::new(0, 2), Point::new(0, 3), Point::new(1, 3)],
+            PieceType::N => vec![Point::new(1, 0), Point::new(2, 0), Point::new(0, 1), Point::new(0, 2), Point::new(0, 3)],
+            PieceType::P => vec![Point::new(0, 0), Point::new(0, 1), Point::new(0, 2), Point::new(1, 0), Point::new(1, 1)],
+            PieceType::U => vec![Point::new(0, 0), Point::new(0, 1), Point::new(1, 1), Point::new(2, 1), Point::new(2, 0)],
+            PieceType::T => vec![Point::new(0, 0), Point::new(1, 0), Point::new(2, 0), Point::new(1, 1), Point::new(1, 2)],
+            PieceType::V => vec![Point::new(0, 0), Point::new(0, 1), Point::new(0, 2), Point::new(1, 2), Point::new(2, 2)],
+            PieceType::W => vec![Point::new(0, 0), Point::new(0, 1), Point::new(1, 1), Point::new(1, 2), Point::new(2, 2)],
+            PieceType::X => vec![Point::new(1, 0), Point::new(0, 1), Point::new(1, 1), Point::new(2, 1), Point::new(1, 2)],
+            PieceType::Y => vec![Point::new(1, 0), Point::new(0, 1), Point::new(1, 1), Point::new(1, 2), Point::new(1, 3)],
+            PieceType::Z => vec![Point::new(0, 0), Point::new(1, 0), Point::new(1, 1), Point::new(1, 2), Point::new(2, 2)],
         };
 
         Self::rotate_piece(cords, rotation)
     }
 
-    fn place_piece(&mut self, piece_id: u32, x: usize, y: usize) -> Result<(), GameError> {
+    pub fn place_piece(&mut self, piece_id: u32, x: usize, y: usize) -> Result<(), GameError> {
         let mut piece_to_place: Option<usize> = None;
         for i in 0..self.pieces.len() {
             if self.pieces[i].id == piece_id {
@@ -215,8 +245,8 @@ impl GameState {
         // translate shape default coordinates to board coordinates
         let mut board_coords: Vec<(usize, usize)> = Vec::with_capacity(piece_place.len());
         for i in 0..piece_place.len() {
-            let new_x = x as i32 + piece_place[i].0;
-            let new_y = y as i32 + piece_place[i].1;
+            let new_x = x as i32 + piece_place[i].get_x();
+            let new_y = y as i32 + piece_place[i].get_y();
 
             if new_x < 0 || new_y < 0 {
                 return Err(GameError::OutOfBounds);
@@ -245,7 +275,7 @@ impl GameState {
         Ok(())
     }
 
-    fn remove_piece(&mut self, piece_id: u32) -> Result<(), GameError> {
+    pub fn remove_piece(&mut self, piece_id: u32) -> Result<(), GameError> {
         // go through the board clear all fields that are marked with the associated piece id
         for y in 0..self.board.grid.len(){
             for x in 0..self.board.grid[y].len(){
@@ -271,7 +301,7 @@ impl GameState {
         Ok(())
     }
     
-    fn check_win(&mut self) {
+    pub fn check_win(&mut self) {
         // go through all pieces to check if position is not none
         // if it is none the piece is not placed.
         // every time a piece is placed we check if the placing is valid
@@ -292,7 +322,7 @@ impl GameState {
         }
     }
 
-    fn available_pieces(&self) -> Vec<u32> {
+    pub fn available_pieces(&self) -> Vec<u32> {
         let mut avail_pieces = Vec::with_capacity(self.pieces.len());
 
         for i in 0..self.pieces.len(){
@@ -304,7 +334,7 @@ impl GameState {
         return avail_pieces;
     }
 
-    fn placed_pieces(&self) -> Vec<u32> {
+    pub fn placed_pieces(&self) -> Vec<u32> {
         let mut placed_pieces = Vec::with_capacity(self.pieces.len());
 
         for i in 0..self.pieces.len(){
@@ -317,6 +347,3 @@ impl GameState {
     }
 }
 
-fn main() {
-    println!("Hello, world!");
-}

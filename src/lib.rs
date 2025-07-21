@@ -199,13 +199,14 @@ impl GameState {
             .map(|(x, y)| Point::new(x - minimum_x, y - minimum_y))
             .collect()
     }
-
+    
+    #[wasm_bindgen] 
     pub fn piece_shape(piece_type: PieceType, rotation: u8) -> Vec<Point> {
         let cords = match piece_type {
             PieceType::I => vec![Point::new(0, 0), Point::new(0, 1), Point::new(0, 2), Point::new(0, 3), Point::new(0, 4)],
             PieceType::F => vec![Point::new(1, 0), Point::new(2, 0), Point::new(0, 1), Point::new(1, 1), Point::new(1, 2)],
             PieceType::L => vec![Point::new(0, 0), Point::new(0, 1), Point::new(0, 2), Point::new(0, 3), Point::new(1, 3)],
-            PieceType::N => vec![Point::new(1, 0), Point::new(2, 0), Point::new(0, 1), Point::new(0, 2), Point::new(0, 3)],
+            PieceType::N => vec![Point::new(1, 0), Point::new(1, 1), Point::new(0, 1), Point::new(0, 2), Point::new(0, 3)],
             PieceType::P => vec![Point::new(0, 0), Point::new(0, 1), Point::new(0, 2), Point::new(1, 0), Point::new(1, 1)],
             PieceType::U => vec![Point::new(0, 0), Point::new(0, 1), Point::new(1, 1), Point::new(2, 1), Point::new(2, 0)],
             PieceType::T => vec![Point::new(0, 0), Point::new(1, 0), Point::new(2, 0), Point::new(1, 1), Point::new(1, 2)],
